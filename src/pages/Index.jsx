@@ -1,7 +1,18 @@
-import { Box, Button, Container, FormControl, FormLabel, Input, NumberInput, NumberInputField, VStack, Heading, Textarea } from "@chakra-ui/react";
-import { FaPaperPlane } from "react-icons/fa";
+import { Box, Button, Container, FormControl, FormLabel, Input, NumberInput, NumberInputField, VStack, Heading, Textarea, IconButton } from "@chakra-ui/react";
+import { FaPaperPlane, FaPlus, FaTrash } from "react-icons/fa";
+import { useState } from "react";
 
 const Index = () => {
+  const [invoiceLines, setInvoiceLines] = useState([{ description: "", unitPrice: 0, vatRate: 0, quantity: 0 }]);
+
+  const addInvoiceLine = () => {
+    setInvoiceLines([...invoiceLines, { description: "", unitPrice: 0, vatRate: 0, quantity: 0 }]);
+  };
+
+  const removeInvoiceLine = (index) => {
+    const newLines = invoiceLines.filter((_, i) => i !== index);
+    setInvoiceLines(newLines);
+  };
   return (
     <Container maxW="container.md" py={8}>
       <Heading mb={6}>Electronic Invoice Submission</Heading>
@@ -124,34 +135,40 @@ const Index = () => {
           <Heading size="md" mb={4}>
             Invoice Lines
           </Heading>
-          <VStack spacing={3}>
-            {/* Repeat for each invoice line */}
-            <FormControl isRequired>
-              <FormLabel>Invoice Line Description</FormLabel>
-              <Input placeholder="Enter line description" />
-            </FormControl>
+          {invoiceLines.map((line, index) => (
+            <VStack key={index} spacing={3} align="stretch">
+              <FormControl isRequired>
+                <FormLabel>Invoice Line Description</FormLabel>
+                <Input placeholder="Enter line description" />
+              </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Invoice Line Unit Price</FormLabel>
-              <NumberInput precision={2}>
-                <NumberInputField placeholder="Enter unit price" />
-              </NumberInput>
-            </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Invoice Line Unit Price</FormLabel>
+                <NumberInput precision={2}>
+                  <NumberInputField placeholder="Enter unit price" />
+                </NumberInput>
+              </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Invoice Line VAT Rate</FormLabel>
-              <NumberInput precision={0}>
-                <NumberInputField placeholder="Enter VAT rate" />
-              </NumberInput>
-            </FormControl>
+              <FormControl isRequired>
+                <FormLabel>Invoice Line VAT Rate</FormLabel>
+                <NumberInput precision={0}>
+                  <NumberInputField placeholder="Enter VAT rate" />
+                </NumberInput>
+              </FormControl>
 
-            <FormControl isRequired>
-              <FormLabel>Invoice Line Quantity</FormLabel>
-              <NumberInput>
-                <NumberInputField placeholder="Enter quantity" />
-              </NumberInput>
-            </FormControl>
-          </VStack>
+              <FormControl isRequired>
+                <FormLabel>Invoice Line Quantity</FormLabel>
+                <NumberInput>
+                  <NumberInputField placeholder="Enter quantity" />
+                </NumberInput>
+              </FormControl>
+
+              <IconButton aria-label="Remove invoice line" icon={<FaTrash />} onClick={() => removeInvoiceLine(index)} />
+            </VStack>
+          ))}
+          <Button leftIcon={<FaPlus />} onClick={addInvoiceLine}>
+            Add Invoice Line
+          </Button>
         </Box>
 
         <Button leftIcon={<FaPaperPlane />} colorScheme="blue" type="submit">
